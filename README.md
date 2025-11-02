@@ -245,6 +245,24 @@ Developed as part of the r3colab public collaboration project.
 
 ---
 
+## 📚 Citation
+
+### Academic Citation
+
+If you use this codebase in your research or project, please cite:
+
+```bibtex
+@software{r3colab,
+  title = {r3colab: Snake Game with Machine Learning},
+  author = {r3dial},
+  year = {2025},
+  url = {https://github.com/r3dial/r3colab},
+  version = {1.0.0}
+}
+```
+
+---
+
 ## License
 
 Open source - feel free to learn from, modify, and share!
