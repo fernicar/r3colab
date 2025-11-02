@@ -470,6 +470,168 @@
             text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
         }
 
+        .metrics-dashboard {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 1200px;
+            height: 85%;
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #ff00ff;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.6);
+            z-index: 100;
+            display: none;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .metrics-dashboard.visible {
+            display: block;
+        }
+
+        .metrics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 255, 255, 0.5);
+        }
+
+        .metrics-header h2 {
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .metrics-close {
+            background: rgba(255, 0, 255, 0.3);
+            border: 2px solid #ff00ff;
+            color: #ff00ff;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .metrics-close:hover {
+            background: rgba(255, 0, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .metric-card .metric-label {
+            color: #00ffff;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        .metric-card .metric-value {
+            color: #00ff00;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .metric-card .metric-subtext {
+            color: #ff00ff;
+            font-size: 0.8em;
+            margin-top: 5px;
+            text-shadow: 0 0 3px #ff00ff;
+        }
+
+        .graph-container {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 0, 255, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+
+        .graph-container h3 {
+            color: #ff00ff;
+            text-shadow: 0 0 5px #ff00ff;
+            margin: 0 0 15px 0;
+            font-size: 1.3em;
+        }
+
+        .graph-canvas {
+            width: 100%;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+
+        .export-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .export-controls button {
+            padding: 10px 25px;
+            font-size: 1em;
+        }
+
+        .metrics-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #00ffff;
+            font-size: 0.9em;
+            text-shadow: 0 0 5px #00ffff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+            box-shadow: 0 0 5px;
+        }
+
         @media (max-width: 768px) {
             .theme-selector, .ai-controls {
                 max-width: 200px;
@@ -548,6 +710,79 @@
             </div>
         </div>
         <div class="ai-visualizer" id="aiVisualizer"></div>
+        <div class="metrics-hint" id="metricsHint">Press 'M' to view Training Metrics</div>
+        <div class="metrics-dashboard" id="metricsDashboard">
+            <div class="metrics-header">
+                <h2>📊 AI Training Metrics Dashboard</h2>
+                <button class="metrics-close" onclick="toggleMetricsDashboard()">Close (M)</button>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Total Episodes</div>
+                    <div class="metric-value" id="metricEpisodes">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Current Reward</div>
+                    <div class="metric-value" id="metricCurrentReward">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Average Reward</div>
+                    <div class="metric-value" id="metricAvgReward">0.0</div>
+                    <div class="metric-subtext" id="metricAvgSubtext">Last 100 episodes</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Best Score</div>
+                    <div class="metric-value" id="metricBestScore">0</div>
+                    <div class="metric-subtext" id="metricBestEpisode">Episode: -</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Training Time</div>
+                    <div class="metric-value" id="metricTrainingTime">0:00:00</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Epsilon</div>
+                    <div class="metric-value" id="metricEpsilon">1.00</div>
+                    <div class="metric-subtext">Exploration Rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Success Rate</div>
+                    <div class="metric-value" id="metricSuccessRate">0%</div>
+                    <div class="metric-subtext" id="metricSuccessSubtext">Score ≥ 50</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Avg Episode Length</div>
+                    <div class="metric-value" id="metricAvgLength">0</div>
+                    <div class="metric-subtext">Steps per episode</div>
+                </div>
+            </div>
+            <div class="graph-container">
+                <h3>📈 Reward Progression Over Episodes</h3>
+                <canvas id="rewardGraph" class="graph-canvas"></canvas>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #00ff00; box-shadow: 0 0 5px #00ff00;"></div>
+                        <span style="color: #00ff00;">Episode Reward</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #00ffff; box-shadow: 0 0 5px #00ffff;"></div>
+                        <span style="color: #00ffff;">MA(10)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff00ff; box-shadow: 0 0 5px #ff00ff;"></div>
+                        <span style="color: #ff00ff;">MA(50)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffff00; box-shadow: 0 0 5px #ffff00;"></div>
+                        <span style="color: #ffff00;">Best Score Line</span>
+                    </div>
+                </div>
+            </div>
+            <div class="export-controls">
+                <button onclick="exportMetricsCSV()">📥 Export CSV</button>
+                <button onclick="exportMetricsJSON()">📥 Export JSON</button>
+                <button onclick="clearMetricsData()">🗑️ Clear Data</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -943,6 +1178,14 @@
                 this.totalScore = 0;
                 this.bestScore = 0;
                 this.updateTargetEvery = 10;
+
+                // Enhanced metrics tracking
+                this.episodeHistory = []; // {episode, score, steps, timestamp, epsilon}
+                this.trainingStartTime = null;
+                this.totalTrainingTime = 0; // in seconds
+                this.currentEpisodeSteps = 0;
+                this.bestEpisode = 0;
+                this.successThreshold = 50; // Score threshold for success
             }
 
             getState(snake, food, tileCount, dx, dy) {
@@ -1071,7 +1314,29 @@
             endEpisode(score) {
                 this.gamesPlayed++;
                 this.totalScore += score;
-                this.bestScore = Math.max(this.bestScore, score);
+
+                // Track best score and episode
+                if (score > this.bestScore) {
+                    this.bestScore = score;
+                    this.bestEpisode = this.gamesPlayed;
+                }
+
+                // Record episode history
+                this.episodeHistory.push({
+                    episode: this.gamesPlayed,
+                    score: score,
+                    steps: this.currentEpisodeSteps,
+                    timestamp: Date.now(),
+                    epsilon: this.epsilon
+                });
+
+                // Keep only last 1000 episodes in memory
+                if (this.episodeHistory.length > 1000) {
+                    this.episodeHistory.shift();
+                }
+
+                // Reset episode step counter
+                this.currentEpisodeSteps = 0;
 
                 // Decay epsilon
                 if (this.epsilon > this.epsilonMin) {
@@ -1085,6 +1350,50 @@
 
                 // Update UI
                 this.updateStats();
+                updateMetricsDashboard();
+            }
+
+            incrementSteps() {
+                this.currentEpisodeSteps++;
+            }
+
+            startTraining() {
+                if (!this.trainingStartTime) {
+                    this.trainingStartTime = Date.now();
+                }
+            }
+
+            getTrainingTime() {
+                if (!this.trainingStartTime) return 0;
+                return this.totalTrainingTime + (Date.now() - this.trainingStartTime) / 1000;
+            }
+
+            pauseTraining() {
+                if (this.trainingStartTime) {
+                    this.totalTrainingTime += (Date.now() - this.trainingStartTime) / 1000;
+                    this.trainingStartTime = null;
+                }
+            }
+
+            getMovingAverage(windowSize) {
+                if (this.episodeHistory.length < windowSize) {
+                    return this.episodeHistory.reduce((sum, ep) => sum + ep.score, 0) / this.episodeHistory.length;
+                }
+                const recent = this.episodeHistory.slice(-windowSize);
+                return recent.reduce((sum, ep) => sum + ep.score, 0) / windowSize;
+            }
+
+            getSuccessRate(windowSize = 100) {
+                if (this.episodeHistory.length === 0) return 0;
+                const recent = this.episodeHistory.slice(-Math.min(windowSize, this.episodeHistory.length));
+                const successes = recent.filter(ep => ep.score >= this.successThreshold).length;
+                return (successes / recent.length) * 100;
+            }
+
+            getAverageSteps() {
+                if (this.episodeHistory.length === 0) return 0;
+                const totalSteps = this.episodeHistory.reduce((sum, ep) => sum + ep.steps, 0);
+                return totalSteps / this.episodeHistory.length;
             }
 
             updateStats() {
@@ -1101,7 +1410,10 @@
                     gamesPlayed: this.gamesPlayed,
                     totalScore: this.totalScore,
                     bestScore: this.bestScore,
-                    epsilon: this.epsilon
+                    bestEpisode: this.bestEpisode,
+                    epsilon: this.epsilon,
+                    episodeHistory: this.episodeHistory,
+                    totalTrainingTime: this.totalTrainingTime
                 };
                 localStorage.setItem('snakeAIModel', JSON.stringify(data));
                 return true;
@@ -1118,8 +1430,12 @@
                     this.gamesPlayed = parsed.gamesPlayed || 0;
                     this.totalScore = parsed.totalScore || 0;
                     this.bestScore = parsed.bestScore || 0;
+                    this.bestEpisode = parsed.bestEpisode || 0;
                     this.epsilon = parsed.epsilon || this.epsilonMin;
+                    this.episodeHistory = parsed.episodeHistory || [];
+                    this.totalTrainingTime = parsed.totalTrainingTime || 0;
                     this.updateStats();
+                    updateMetricsDashboard();
                     return true;
                 } catch (e) {
                     console.error('Failed to load model:', e);
@@ -1135,7 +1451,13 @@
                 this.gamesPlayed = 0;
                 this.totalScore = 0;
                 this.bestScore = 0;
+                this.bestEpisode = 0;
+                this.episodeHistory = [];
+                this.trainingStartTime = null;
+                this.totalTrainingTime = 0;
+                this.currentEpisodeSteps = 0;
                 this.updateStats();
+                updateMetricsDashboard();
             }
         }
 
@@ -1491,6 +1813,11 @@
         }
 
         function update() {
+            // Track step count for AI training
+            if (currentGameMode === 'train') {
+                aiAgent.incrementSteps();
+            }
+
             // Get current state
             const currentState = aiAgent.getState(snake, food, tileCount, dx, dy);
 
@@ -1759,6 +2086,11 @@
         }
 
         function setGameMode(mode) {
+            // Pause training timer if switching from training mode
+            if (currentGameMode === 'train' && mode !== 'train') {
+                aiAgent.pauseTraining();
+            }
+
             currentGameMode = mode;
             attractMode = false;
             attractModeOverlay.style.display = 'none';
@@ -1777,6 +2109,7 @@
             } else if (mode === 'train') {
                 document.getElementById('aiTrainBtn').classList.add('active');
                 aiMode = true;
+                aiAgent.startTraining();
             }
 
             restartGame();
@@ -1821,6 +2154,303 @@
                 alert('AI has been reset.');
             }
         }
+
+        // ===== METRICS DASHBOARD FUNCTIONS =====
+        function toggleMetricsDashboard() {
+            const dashboard = document.getElementById('metricsDashboard');
+            dashboard.classList.toggle('visible');
+            if (dashboard.classList.contains('visible')) {
+                updateMetricsDashboard();
+                drawRewardGraph();
+            }
+        }
+
+        function updateMetricsDashboard() {
+            // Update metric cards
+            document.getElementById('metricEpisodes').textContent = aiAgent.gamesPlayed;
+            document.getElementById('metricCurrentReward').textContent = score;
+            document.getElementById('metricAvgReward').textContent =
+                aiAgent.episodeHistory.length > 0 ? aiAgent.getMovingAverage(100).toFixed(1) : '0.0';
+            document.getElementById('metricBestScore').textContent = aiAgent.bestScore;
+            document.getElementById('metricBestEpisode').textContent =
+                aiAgent.bestEpisode > 0 ? `Episode: ${aiAgent.bestEpisode}` : 'Episode: -';
+
+            // Format training time
+            const totalSeconds = Math.floor(aiAgent.getTrainingTime());
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            document.getElementById('metricTrainingTime').textContent =
+                `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            document.getElementById('metricEpsilon').textContent = aiAgent.epsilon.toFixed(2);
+            document.getElementById('metricSuccessRate').textContent =
+                aiAgent.getSuccessRate().toFixed(1) + '%';
+            document.getElementById('metricAvgLength').textContent =
+                Math.round(aiAgent.getAverageSteps());
+
+            // Redraw graph if dashboard is visible
+            if (document.getElementById('metricsDashboard').classList.contains('visible')) {
+                drawRewardGraph();
+            }
+        }
+
+        function drawRewardGraph() {
+            const canvas = document.getElementById('rewardGraph');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            // Clear canvas
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (aiAgent.episodeHistory.length === 0) {
+                // Show "No data" message
+                ctx.fillStyle = '#00ffff';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('No training data yet. Start training to see metrics!', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+
+            const padding = 40;
+            const graphWidth = canvas.width - 2 * padding;
+            const graphHeight = canvas.height - 2 * padding;
+
+            // Calculate data ranges
+            const episodes = aiAgent.episodeHistory.map(e => e.episode);
+            const scores = aiAgent.episodeHistory.map(e => e.score);
+            const minEpisode = Math.min(...episodes);
+            const maxEpisode = Math.max(...episodes);
+            const minScore = 0;
+            const maxScore = Math.max(...scores, aiAgent.bestScore, 10);
+
+            // Helper function to convert data to canvas coordinates
+            function toX(episode) {
+                return padding + ((episode - minEpisode) / (maxEpisode - minEpisode || 1)) * graphWidth;
+            }
+
+            function toY(score) {
+                return canvas.height - padding - ((score - minScore) / (maxScore - minScore)) * graphHeight;
+            }
+
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (i / 5) * graphHeight;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+
+                // Y-axis labels
+                const scoreValue = maxScore - (i / 5) * (maxScore - minScore);
+                ctx.fillStyle = '#00ffff';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'right';
+                ctx.fillText(Math.round(scoreValue), padding - 5, y + 4);
+            }
+
+            // Draw axes
+            ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, canvas.height - padding);
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.stroke();
+
+            // X-axis labels
+            ctx.fillStyle = '#00ffff';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= 5; i++) {
+                const episode = minEpisode + (i / 5) * (maxEpisode - minEpisode);
+                const x = padding + (i / 5) * graphWidth;
+                ctx.fillText(Math.round(episode), x, canvas.height - padding + 20);
+            }
+
+            // Calculate moving averages
+            function calculateMA(data, window) {
+                const result = [];
+                for (let i = 0; i < data.length; i++) {
+                    const start = Math.max(0, i - window + 1);
+                    const slice = data.slice(start, i + 1);
+                    const avg = slice.reduce((sum, val) => sum + val, 0) / slice.length;
+                    result.push(avg);
+                }
+                return result;
+            }
+
+            const ma10 = calculateMA(scores, 10);
+            const ma50 = calculateMA(scores, 50);
+
+            // Draw best score line
+            if (aiAgent.bestScore > 0) {
+                ctx.strokeStyle = '#ffff00';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                const bestY = toY(aiAgent.bestScore);
+                ctx.moveTo(padding, bestY);
+                ctx.lineTo(canvas.width - padding, bestY);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Draw episode rewards (thin line)
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            aiAgent.episodeHistory.forEach((ep, i) => {
+                const x = toX(ep.episode);
+                const y = toY(ep.score);
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+            ctx.globalAlpha = 1.0;
+
+            // Draw MA(10)
+            if (ma10.length > 1) {
+                ctx.strokeStyle = '#00ffff';
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = '#00ffff';
+                ctx.beginPath();
+                ma10.forEach((avg, i) => {
+                    const x = toX(aiAgent.episodeHistory[i].episode);
+                    const y = toY(avg);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // Draw MA(50)
+            if (ma50.length > 1) {
+                ctx.strokeStyle = '#ff00ff';
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = '#ff00ff';
+                ctx.beginPath();
+                ma50.forEach((avg, i) => {
+                    const x = toX(aiAgent.episodeHistory[i].episode);
+                    const y = toY(avg);
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // Draw axis labels
+            ctx.fillStyle = '#ff00ff';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Episode', canvas.width / 2, canvas.height - 5);
+
+            ctx.save();
+            ctx.translate(15, canvas.height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Reward (Score)', 0, 0);
+            ctx.restore();
+        }
+
+        function exportMetricsCSV() {
+            if (aiAgent.episodeHistory.length === 0) {
+                alert('No training data to export!');
+                return;
+            }
+
+            let csv = 'Episode,Score,Steps,Timestamp,Epsilon\n';
+            aiAgent.episodeHistory.forEach(ep => {
+                csv += `${ep.episode},${ep.score},${ep.steps},${new Date(ep.timestamp).toISOString()},${ep.epsilon.toFixed(4)}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `snake-ai-metrics-${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function exportMetricsJSON() {
+            if (aiAgent.episodeHistory.length === 0) {
+                alert('No training data to export!');
+                return;
+            }
+
+            const data = {
+                metadata: {
+                    exportDate: new Date().toISOString(),
+                    totalEpisodes: aiAgent.gamesPlayed,
+                    bestScore: aiAgent.bestScore,
+                    bestEpisode: aiAgent.bestEpisode,
+                    totalTrainingTime: aiAgent.getTrainingTime(),
+                    currentEpsilon: aiAgent.epsilon
+                },
+                episodes: aiAgent.episodeHistory,
+                statistics: {
+                    averageScore: (aiAgent.totalScore / aiAgent.gamesPlayed).toFixed(2),
+                    averageSteps: aiAgent.getAverageSteps().toFixed(2),
+                    successRate: aiAgent.getSuccessRate().toFixed(2),
+                    movingAverage10: aiAgent.getMovingAverage(10).toFixed(2),
+                    movingAverage50: aiAgent.getMovingAverage(50).toFixed(2),
+                    movingAverage100: aiAgent.getMovingAverage(100).toFixed(2)
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `snake-ai-metrics-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearMetricsData() {
+            if (confirm('Are you sure you want to clear all training metrics? This will not affect the trained model, only the history data.')) {
+                aiAgent.episodeHistory = [];
+                aiAgent.trainingStartTime = null;
+                aiAgent.totalTrainingTime = 0;
+                updateMetricsDashboard();
+                alert('Metrics data cleared!');
+            }
+        }
+
+        // Add keyboard listener for 'M' key to toggle metrics
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'm' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                e.preventDefault();
+                toggleMetricsDashboard();
+            }
+        });
+
+        // Update metrics dashboard periodically when visible
+        setInterval(() => {
+            if (document.getElementById('metricsDashboard').classList.contains('visible')) {
+                updateMetricsDashboard();
+            }
+        }, 1000);
 
         // Initial draw
         draw();
