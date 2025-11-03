@@ -1613,9 +1613,11 @@
             if (gameRunning) return;
             gameRunning = true;
             gameOverText.style.display = 'none';
-            // Apply speed multiplier ONLY for training mode, human gameplay is always 1x
-            let baseInterval = 100; // Default for human and demo modes
+            // Apply speed multiplier ONLY for training mode
+            // Human and demo modes ALWAYS use 1x speed (100ms base interval)
+            let baseInterval = 100; // Default 1x speed
             if (currentGameMode === 'train') {
+                // Only training mode uses the trainingSpeed slider
                 baseInterval = Math.max(10, 100 / trainingSpeed);
             }
             const interval = Math.max(10, baseInterval / currentTheme.speed);
@@ -2113,6 +2115,10 @@
             } else if (mode === 'demo') {
                 document.getElementById('aiDemoBtn').classList.add('active');
                 aiMode = true;
+                // Reset training speed to 1x for demo mode to prevent speed carryover
+                trainingSpeed = 1;
+                document.getElementById('speedSlider').value = 1;
+                document.getElementById('speedLabel').textContent = '1x';
             } else if (mode === 'train') {
                 document.getElementById('aiTrainBtn').classList.add('active');
                 aiMode = true;
@@ -2128,10 +2134,11 @@
         }
 
         function updateTrainingSpeed(value) {
-            trainingSpeed = parseInt(value);
-            document.getElementById('speedLabel').textContent = trainingSpeed + 'x';
+            const newSpeed = parseInt(value);
+            trainingSpeed = newSpeed;
+            document.getElementById('speedLabel').textContent = newSpeed + 'x';
 
-            // Only update game loop speed if we're in training mode
+            // Only update game loop speed if we're actively running in training mode
             if (gameRunning && currentGameMode === 'train') {
                 clearInterval(gameLoop);
                 const baseInterval = Math.max(10, 100 / trainingSpeed);
