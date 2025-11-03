@@ -2075,6 +2075,13 @@
         }
 
         function restartGame() {
+            // Stop the existing game loop to prevent speed issues
+            if (gameLoop) {
+                clearInterval(gameLoop);
+                gameLoop = null;
+            }
+            gameRunning = false;
+
             // Initialize snake with theme's starting length
             snake = [{x: 10, y: 10}];
             for (let i = 1; i < currentTheme.startLength; i++) {
@@ -2090,7 +2097,6 @@
             trailParticles.length = 0; // Clear trail particles
             placeFood();
             gameOverText.style.display = 'none';
-            gameRunning = false;
             draw();
         }
 
@@ -2112,6 +2118,10 @@
             if (mode === 'human') {
                 document.getElementById('humanModeBtn').classList.add('active');
                 aiMode = false;
+                // Reset training speed to 1x for human mode to prevent speed carryover
+                trainingSpeed = 1;
+                document.getElementById('speedSlider').value = 1;
+                document.getElementById('speedLabel').textContent = '1x';
             } else if (mode === 'demo') {
                 document.getElementById('aiDemoBtn').classList.add('active');
                 aiMode = true;
