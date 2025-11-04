@@ -610,6 +610,49 @@
             z-index: 10;
         }
 
+        .mute-button {
+            position: absolute;
+            bottom: 60px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 0, 255, 0.5);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        .mute-button:hover {
+            background: rgba(255, 0, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
+            transform: scale(1.1);
+        }
+
+        .mute-button.muted {
+            border-color: rgba(255, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .mute-button.muted:hover {
+            background: rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+        }
+
+        .mute-button span {
+            font-size: 24px;
+            filter: drop-shadow(0 0 5px #ff00ff);
+        }
+
+        .mute-button.muted span {
+            filter: drop-shadow(0 0 5px #ff0000);
+        }
+
         .legend {
             display: flex;
             gap: 20px;
@@ -710,6 +753,9 @@
             </div>
         </div>
         <div class="ai-visualizer" id="aiVisualizer"></div>
+        <div class="mute-button" id="muteButton" onclick="toggleMute()" title="Toggle Sound">
+            <span id="muteIcon">🔊</span>
+        </div>
         <div class="metrics-hint" id="metricsHint">Press 'M' to view Training Metrics</div>
         <div class="metrics-dashboard" id="metricsDashboard">
             <div class="metrics-header">
@@ -1460,10 +1506,47 @@
         let previousAction = null;
         let trainingSpeed = 1;
 
+        // Sound mute state
+        let isMuted = false;
+
+        // Load mute preference from localStorage
+        function loadMutePreference() {
+            const savedMute = localStorage.getItem('snakeSoundMuted');
+            if (savedMute === 'true') {
+                isMuted = true;
+                updateMuteButton();
+            }
+        }
+
+        // Toggle mute state
+        function toggleMute() {
+            isMuted = !isMuted;
+            localStorage.setItem('snakeSoundMuted', isMuted);
+            updateMuteButton();
+        }
+
+        // Update mute button appearance
+        function updateMuteButton() {
+            const muteButton = document.getElementById('muteButton');
+            const muteIcon = document.getElementById('muteIcon');
+
+            if (isMuted) {
+                muteButton.classList.add('muted');
+                muteIcon.textContent = '🔇';
+            } else {
+                muteButton.classList.remove('muted');
+                muteIcon.textContent = '🔊';
+            }
+        }
+
         // 8-bit Sound System using Web Audio API
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
         function play8bitSound(type) {
+            // Check if sound is muted
+            if (isMuted) {
+                return;
+            }
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
 
@@ -2486,6 +2569,9 @@
 
         // Restore panel states
         restorePanelStates();
+
+        // Load mute preference
+        loadMutePreference();
 
         // Try to load saved model
         aiAgent.load();
